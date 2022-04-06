@@ -1,0 +1,22 @@
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  color: white;
+  font-size: 20px;
+  background-color: rgb(71, 71, 71);
+}
+
+.equations {
+  display: flex;
+  flex-direction: column;
+}
+
+.input {
+  background-color: rgb(141, 137, 137);
+  padding: 1px;
+}
+
+input {
+  font-size: 20px;
+  height: 70px;
+  width: 98%;
+}
