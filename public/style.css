@@ -5,18 +5,19 @@ body {
   background-color: rgb(71, 71, 71);
 }
 
+
+.app {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
 .equations {
   display: flex;
   flex-direction: column;
+  gap: 10px;
 }
 
-.input {
-  background-color: rgb(141, 137, 137);
-  padding: 1px;
-}
-
-input {
-  font-size: 20px;
-  height: 70px;
-  width: 98%;
+.input > input {
+  width: 200px;
 }
