@@ -1,14 +1,12 @@
 import React from "react";
 import Equations from "./Equations";
+import Graph from "./Graph";
 
-class App extends React.Component {
-  render() {
-    return (
-      <div className="app">
-        <Equations></Equations>
-      </div>
-    );
-  }
+export default function App() {
+  return (
+    <div className="app">
+      <Graph></Graph>
+      <Equations></Equations>
+    </div>
+  );
 }
-
-export default App;

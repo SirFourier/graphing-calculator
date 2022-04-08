@@ -11,7 +11,7 @@ class Input extends React.Component {
           value={equation}
           onChange={(e) => onChange(id, e)}
         ></input>
-        <button onClick={() => onDelete(id)}>Delete {id}</button>
+        <button onClick={() => onDelete(id)}>Delete</button>
       </div>
     );
   }

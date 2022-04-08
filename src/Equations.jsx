@@ -1,53 +1,44 @@
-import React from "react";
+import React, { useState } from "react";
 import Input from "./Input";
 
-class Equations extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      inputs: [
-        { id: 0, equation: "" },
-        { id: 1, equation: "" },
-      ],
-    };
-  }
+const Equations = () => {
+  const [inputs, setInputs] = useState([
+    { id: 0, equation: "" },
+    { id: 1, equation: "" },
+  ]);
 
-  handleChange = (id, e) => {
-    const inputs = [...this.state.inputs];
-    inputs[id].equation = e.target.value;
-    this.setState({ inputs: inputs });
+  const handleChange = (id, e) => {
+    const newInputs = [...inputs];
+    newInputs[id].equation = e.target.value;
+    setInputs(newInputs);
   };
 
-  handleAdd = () => {
-    const inputs = [...this.state.inputs];
-    inputs.push({ id: inputs.length, equation: "" });
-    this.setState({ inputs: inputs });
+  const handleAdd = () => {
+    setInputs([...inputs, { id: inputs.length, equation: "" }]);
   };
 
-  handleDelete = (id) => {
-    const inputs = [...this.state.inputs];
-    inputs.splice(id, 1);
-    this.setState({ inputs: inputs });
+  const handleDelete = (id) => {
+    const newInputs = [...inputs];
+    newInputs.splice(id, 1);
+    setInputs(newInputs);
   };
 
-  render() {
-    return (
-      <div className="equations">
-        {this.state.inputs.map(({ equation }, index) => (
-          <Input
-            key={index}
-            id={index}
-            equation={equation}
-            onChange={this.handleChange}
-            onDelete={this.handleDelete}
-          >
-            {equation}
-          </Input>
-        ))}
-        <button onClick={this.handleAdd}>Add</button>
-      </div>
-    );
-  }
-}
+  return (
+    <div className="equations">
+      {inputs.map(({ equation }, index) => (
+        <Input
+          key={index}
+          id={index}
+          equation={equation}
+          onChange={handleChange}
+          onDelete={handleDelete}
+        >
+          {equation}
+        </Input>
+      ))}
+      <button onClick={handleAdd}>Add</button>
+    </div>
+  );
+};
 
 export default Equations;
