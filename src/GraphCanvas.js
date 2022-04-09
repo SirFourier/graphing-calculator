@@ -18,12 +18,21 @@ export default class GraphCanvas {
     this.yMax = this.yCenter;
 
     // make grid spacing based on width of graph
-    this.spacingDivisor = 10;
+    this.spacingDivisor = 20;
     this.gridSpacing = this.width / this.spacingDivisor;
 
+    // define the scale (how many pixels per grid spacing)
+    this.scale = 2;
+
+    // define different line widths
     this.axisLineWidth = 0.01 * this.width;
     this.thickLineWidth = 0.002 * this.width;
     this.thinLineWidth = 0.002 * this.width;
+
+    // font parameters
+    this.fontSize = 0.4 * this.gridSpacing;
+    this.xFontOffset = 0.5 * this.gridSpacing;
+    this.yFontOffset = 0.5 * this.gridSpacing;
   };
 
   // draw line with shifted coordinates based on center and flipped x-axis (y coordinates)
@@ -81,17 +90,52 @@ export default class GraphCanvas {
 
     // draw negative y-axis grid lines
     x = gridSpacing;
-    while(x > xMin) {
+    while (x > xMin) {
       drawLine(x, yMin, x, yMax);
+      x -= gridSpacing;
+    }
+  };
+
+  drawNumber = (number, x, y) => {
+    const { ctx, fontSize, xCenter, yCenter, xFontOffset, yFontOffset } = this;
+    ctx.fillStyle = "black";
+    ctx.font = `${fontSize}px Arial`;
+    ctx.fillText(number.toString(), x - fontSize/2 + xCenter, -(y - yFontOffset) + yCenter);
+  };
+
+  drawNumbers = () => {
+    const { drawNumber, scale, gridSpacing, xMin, xMax, yMin, yMax } = this;
+
+    // draw positive x-axis numbers
+    let currentNumber = 0;
+    let x = 0;
+    while (x < xMax) {
+      drawNumber(currentNumber, x, 0);
+      currentNumber += scale;
+      x += gridSpacing;
+    }
+
+    // draw negative x-axis numbers
+    currentNumber = -scale;
+    x = -gridSpacing;
+    while (x > xMin) {
+      drawNumber(currentNumber, x, 0);
+      currentNumber -= scale;
       x -= gridSpacing;
     }
   };
 
   // clear the grid
   clear = () => {
-    const { drawAxis, drawGridLines } = this;
+    const { ctx, width, height, drawAxis, drawGridLines, drawNumbers } = this;
+    // clear canvas with white
+    ctx.fillStyle = "white";
+    ctx.fillRect(0, 0, width, height);
+
     drawAxis();
     drawGridLines();
+
+    drawNumbers();
   };
 
   drawCircle = () => {
