@@ -31,7 +31,7 @@ export default class GraphCanvas {
 
     // font parameters
     this.fontSize = 0.4 * this.gridSpacing;
-    this.xFontOffset = 0.5 * this.gridSpacing;
+    this.xFontOffset = 0.3 * this.gridSpacing;
     this.yFontOffset = 0.5 * this.gridSpacing;
   };
 
@@ -54,6 +54,26 @@ export default class GraphCanvas {
     drawLine(0, yMin, 0, yMax);
   };
 
+  drawNumber = (number, x, y, x_axis) => {
+    const { ctx, xCenter, yCenter, xFontOffset, yFontOffset } = this;
+
+    if (x_axis) {
+      const width = ctx.measureText(number.toString()).width;
+      ctx.fillText(
+        number.toString(),
+        x + xCenter,
+        -(y - yFontOffset) + yCenter
+      );
+    } else {
+      ctx.fillText(
+        number.toString(),
+        x + xCenter + xFontOffset,
+        -(y) + yCenter
+      );
+    }
+  };
+
+  // draw grid lines and the numbers
   drawGridLines = () => {
     const {
       ctx,
@@ -64,78 +84,66 @@ export default class GraphCanvas {
       yMin,
       yMax,
       thickLineWidth,
+      fontSize,
+      scale,
+      drawNumber,
     } = this;
 
-    ctx.lineWidth = thickLineWidth;
-    // draw positive x-axis grid lines
-    let y = gridSpacing;
-    while (y < yMax) {
-      drawLine(xMin, y, xMax, y);
-      y += gridSpacing;
-    }
-
-    // draw negative x-axis grid lines
-    y = gridSpacing;
-    while (y > yMin) {
-      drawLine(xMin, y, xMax, y);
-      y -= gridSpacing;
-    }
-
-    // draw positive y-axis grid lines
-    let x = gridSpacing;
-    while (x < xMax) {
-      drawLine(x, yMin, x, yMax);
-      x += gridSpacing;
-    }
-
-    // draw negative y-axis grid lines
-    x = gridSpacing;
-    while (x > xMin) {
-      drawLine(x, yMin, x, yMax);
-      x -= gridSpacing;
-    }
-  };
-
-  drawNumber = (number, x, y) => {
-    const { ctx, fontSize, xCenter, yCenter, xFontOffset, yFontOffset } = this;
+    // set style
     ctx.fillStyle = "black";
     ctx.font = `${fontSize}px Arial`;
-    ctx.fillText(number.toString(), x - fontSize/2 + xCenter, -(y - yFontOffset) + yCenter);
-  };
+    ctx.lineWidth = thickLineWidth;
 
-  drawNumbers = () => {
-    const { drawNumber, scale, gridSpacing, xMin, xMax, yMin, yMax } = this;
-
-    // draw positive x-axis numbers
+    // draw positive x-axis grid lines
     let currentNumber = 0;
     let x = 0;
     while (x < xMax) {
-      drawNumber(currentNumber, x, 0);
+      drawLine(x, yMin, x, yMax);
+      drawNumber(currentNumber, x, 0, true);
       currentNumber += scale;
       x += gridSpacing;
     }
 
-    // draw negative x-axis numbers
-    currentNumber = -scale;
+    // draw negative x-axis grid lines
     x = -gridSpacing;
+    currentNumber = -scale;
     while (x > xMin) {
-      drawNumber(currentNumber, x, 0);
+      drawLine(x, yMin, x, yMax);
+      drawNumber(currentNumber, x, 0, true);
       currentNumber -= scale;
       x -= gridSpacing;
+    }
+
+    // draw positive y-axis grid lines
+    let y = gridSpacing;
+    currentNumber = scale;
+    while (y < yMax) {
+      drawLine(xMin, y, xMax, y);
+      drawNumber(currentNumber, 0, y, false);
+      currentNumber += scale;
+      y += gridSpacing;
+    }
+
+    // draw negative y-axis grid lines
+    y = -gridSpacing;
+    currentNumber = -scale;
+    while (y > yMin) {
+      drawLine(xMin, y, xMax, y);
+      drawNumber(currentNumber, 0, y, false);
+      currentNumber -= scale;
+      y -= gridSpacing;
     }
   };
 
   // clear the grid
   clear = () => {
-    const { ctx, width, height, drawAxis, drawGridLines, drawNumbers } = this;
+    const { ctx, width, height, drawAxis, drawGridLines } = this;
     // clear canvas with white
     ctx.fillStyle = "white";
     ctx.fillRect(0, 0, width, height);
 
     drawAxis();
     drawGridLines();
-
-    drawNumbers();
   };
 
   drawCircle = () => {
