@@ -4,9 +4,9 @@ import Graph from "./Graph";
 
 export default function App() {
   return (
-    <div className="app">
-      <Graph></Graph>
-      <Equations></Equations>
+    <div className="app container">
+      <Graph className="graph item"></Graph>
+      <Equations className="equations item"></Equations>
     </div>
   );
 }

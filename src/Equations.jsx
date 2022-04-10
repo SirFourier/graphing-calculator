@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Input from "./Input";
 
-const Equations = () => {
+const Equations = (props) => {
   const [inputs, setInputs] = useState([
     { id: 0, equation: "" },
     { id: 1, equation: "" },
@@ -24,7 +24,7 @@ const Equations = () => {
   };
 
   return (
-    <div className="equations">
+    <div {...props}>
       {inputs.map(({ equation }, index) => (
         <Input
           key={index}
