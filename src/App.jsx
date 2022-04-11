@@ -5,8 +5,8 @@ import Graph from "./Graph";
 export default function App() {
   return (
     <div className="app container">
-      <Graph className="graph item"></Graph>
       <Equations className="equations item"></Equations>
+      <Graph className="graph item"></Graph>
     </div>
   );
 }

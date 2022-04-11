@@ -20,40 +20,30 @@ const generatePoints = (min, max, step) => {
 };
 
 const labels = generatePoints(-10, 10, 2);
-const data1 = labels.map((x) => x * x);
+const data = labels.map((x) => x * x);
 
 const datasets = {
   labels: labels,
   datasets: [
     {
-      data: data1,
+      data: data,
       borderColor: "rgb(75, 192, 192)",
     },
   ],
 };
 
 const options = {
-  responsive: true,
-  plugins: {
-    title: {
-      text: "hello world",
-      display: true,
-    },
-  },
+  maintainAspectRatio: false,
   elements: {
     point: {
       radius: 0,
     },
     line: {
       cubicInterpolationMode: "monotone",
-    }
+    },
   },
 };
 
 export default function Graph(props) {
-  return (
-    <div {...props}>
-      <Line options={options} data={datasets} />;
-    </div>
-  );
+  return <Line {...props} options={options} data={datasets} />;
 }
