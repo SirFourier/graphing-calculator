@@ -1,20 +1,10 @@
 import React from "react";
 
-class Input extends React.Component {
-  render() {
-    const { id, equation, onChange, onDelete } = this.props;
-    return (
-      <div className="input">
-        <input
-          type="text"
-          name="input"
-          value={equation}
-          onChange={(e) => onChange(id, e)}
-        ></input>
-        <button onClick={() => onDelete(id)}>Delete</button>
-      </div>
-    );
-  }
+export default function Input({ id, value, onChange, onDelete }) {
+  return (
+    <div>
+      <input type="text" value={value} onChange={(e) => onChange(id, e)} />
+      <button onClick={() => onDelete(id)}>Delete</button>
+    </div>
+  );
 }
-
-export default Input;
