@@ -3,6 +3,7 @@ import Input from "./Input";
 
 export default function Inputs({
   className,
+  type,
   inputs,
   onChange,
   onDelete,
@@ -14,12 +15,13 @@ export default function Inputs({
         <Input
           key={index}
           id={index}
+          type={type}
           onChange={onChange}
           onDelete={onDelete}
           value={value}
         />
       ))}
-      <button onClick={onAdd}>Add</button>
+      <button className="btn btn-primary" onClick={onAdd}>Add</button>
     </div>
   );
 }
