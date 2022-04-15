@@ -14,6 +14,7 @@ export default function MultipleInputs({
         <input
           key={key}
           type={type}
+          value={values[key]}
           aria-label={key}
           placeholder={key}
           className="form-control"
