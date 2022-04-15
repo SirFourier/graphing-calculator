@@ -7,6 +7,7 @@ export default function Input({
   placeholder,
   value,
   onChange,
+  onKeyDown,
   onDelete,
 }) {
   return (
@@ -17,6 +18,7 @@ export default function Input({
         type={type}
         placeholder={placeholder}
         value={value}
+        onKeyDown={(e) => onKeyDown(e)}
         onChange={(e) => onChange(id, e)}
       />
       {onDelete && (
