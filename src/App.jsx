@@ -1,21 +1,34 @@
 import React, { useState } from "react";
-import Input from "./components/Input";
 import MultipleInputs from "./components/MultipleInputs";
 import RadioGroup from "./components/RadioGroup";
+import ErrorBox from "./components/ErrorBox";
+import Temperature from "./Temperature";
 
 // Using openweathermap.org
 const API = {
   KEY: "5d5c88002278a4fbef29d7752e855e0e",
   UNITS: "metric",
   ROOT: "https://api.openweathermap.org/data/2.5/weather?",
-  queryByCity: (city) =>
-    `${API.ROOT}q=${city}&appid=${API.KEY}&units=${API.UNITS}`,
-  queryByCoordinates: (lat, lon) =>
-    `${API.ROOT}lat=${lat}&lon=${lon}&appid=${API.KEY}&units=${API.UNITS}`,
+  query: (format) => `${API.ROOT}${format}&appid=${API.KEY}&units=${API.UNITS}`,
+  queryBy: (type) => {
+    switch (type) {
+      case "city":
+        return ({ name }) => API.query(`q=${name}`);
+      case "coordinates":
+        return ({ latitude, longitude }) =>
+          API.query(`lat=${latitude}&lon=${longitude}`);
+      default:
+        console.log("Query type not available");
+    }
+  },
+  getMain: (data) => data.main,
+  getCity: (data) => data.name,
+  getCountry: (data) => data.sys.country,
+  getTemp: (data) => data.main.temp,
 };
 
 const emptyQuery = {
-  city: "",
+  city: { name: "" },
   coordinates: { latitude: "", longitude: "" },
 };
 
@@ -31,31 +44,20 @@ export default function App() {
 
   const handleChange = (id, e) => {
     const newQuery = { ...query };
-    if (id === "city") {
-      newQuery[id] = e.target.value;
-    } else if (id === "latitude" || id === "longitude") {
-      newQuery.coordinates[id] = e.target.value;
-    }
+    newQuery[queryType][id] = e.target.value;
     setQuery(newQuery);
   };
 
   const handleError = ({ cod, message }) => {
     if (cod >= 400 && cod <= 599) {
       // client or server error response
-      throw new Error(`${cod}, Message: ${message}`);
+      throw new Error(`Error: ${cod}, Message: ${message}`);
     }
   };
 
   const handleSearch = async () => {
     try {
-      const api = await fetch(
-        queryType === "city"
-          ? API.queryByCity(query.city)
-          : API.queryByCoordinates(
-              query.coordinates.latitude,
-              query.coordinates.longitude
-            )
-      );
+      const api = await fetch(API.queryBy(queryType)(query[queryType]));
       const data = await api.json();
 
       // handle any error responses
@@ -64,10 +66,9 @@ export default function App() {
       setError("");
       console.log(data);
 
-      setWeather({ ...weather, ...data });
+      setWeather(data);
     } catch (e) {
-      console.error(e);
-      setError(e.toString());
+      setError(e.message);
     }
   };
 
@@ -89,43 +90,22 @@ export default function App() {
         checked={queryType}
         onChange={handleRadioChange}
       />
-
-      {queryType === "city" ? (
-        <Input
-          id={"city"}
-          label={"City"}
-          type="text"
-          placeholder="city, (country is optional)"
-          value={query.city}
-          onChange={handleChange}
-          onKeyDown={handleEnter}
-        />
-      ) : (
-        <MultipleInputs
-          type="text"
-          mainLabel="Coordinates"
-          values={query.coordinates}
-          onChange={handleChange}
-          onKeyDown={handleEnter}
-        />
-      )}
-
-      {error && (
-        <div className="alert alert-danger" role="alert">
-          {error}
-        </div>
-      )}
+      <MultipleInputs
+        type="text"
+        values={query[queryType]}
+        onChange={handleChange}
+        onKeyDown={handleEnter}
+      />
+      <ErrorBox message={error} />
       <button className="btn btn-primary" onClick={handleSearch}>
         Search
       </button>
-      {weather.main && (
-        <div>
-          <p className="temp">{Math.round(weather.main.temp)}</p>
-          <span className="temp">&#8451;</span>
-          <p>
-            {weather.name}, {weather.sys.country}
-          </p>
-        </div>
+      {API.getMain(weather) && (
+        <Temperature
+          temp={API.getTemp(weather)}
+          name={API.getCity(weather)}
+          country={API.getCountry(weather)}
+        />
       )}
     </div>
   );
