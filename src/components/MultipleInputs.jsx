@@ -9,7 +9,7 @@ export default function MultipleInputs({
 }) {
   return (
     <div className="input-group mb-2">
-      <span className="input-group-text">{mainLabel}</span>
+      {mainLabel && <span className="input-group-text">{mainLabel}</span>}
       {Object.keys(values).map((key) => (
         <input
           key={key}
