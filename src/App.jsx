@@ -1,27 +1,30 @@
 import React, { useState } from "react";
-import MultipleInputs from "./components/MultipleInputs";
-import RadioGroup from "./components/RadioGroup";
-import ErrorBox from "./components/ErrorBox";
 import Temperature from "./Temperature";
+import SearchQuery from "./SearchQuery";
 
-// Using openweathermap.org
+// using openweathermap.org
+// this contains constants and interfaces with the API
 const API = {
+  ROOT: "https://api.openweathermap.org/data/2.5/weather?",
   KEY: "5d5c88002278a4fbef29d7752e855e0e",
   UNITS: "metric",
-  ROOT: "https://api.openweathermap.org/data/2.5/weather?",
-  query: (format) => `${API.ROOT}${format}&appid=${API.KEY}&units=${API.UNITS}`,
-  queryBy: (type) => {
+  query(format) {
+    return `${this.ROOT}${format}&appid=${this.KEY}&units=${this.UNITS}`;
+  },
+  queryBy(type, query) {
     switch (type) {
       case "city":
-        return ({ name }) => API.query(`q=${name}`);
+        const city = query.city;
+        return this.query(`q=${city.name}`);
       case "coordinates":
-        return ({ latitude, longitude }) =>
-          API.query(`lat=${latitude}&lon=${longitude}`);
+        const coordinates = query.coordinates;
+        const { latitude, longitude } = coordinates;
+        return this.query(`lat=${latitude}&lon=${longitude}`);
       default:
         console.log("Query type not available");
     }
   },
-  getMain: (data) => data.main,
+  isOK: (data) => data.cod === 200,
   getCity: (data) => data.name,
   getCountry: (data) => data.sys.country,
   getTemp: (data) => data.main.temp,
@@ -42,7 +45,7 @@ export default function App() {
   const [weather, setWeather] = useState({});
   const [error, setError] = useState("");
 
-  const handleChange = (id, e) => {
+  const handleInputChange = (id, e) => {
     const newQuery = { ...query };
     newQuery[queryType][id] = e.target.value;
     setQuery(newQuery);
@@ -57,7 +60,7 @@ export default function App() {
 
   const handleSearch = async () => {
     try {
-      const api = await fetch(API.queryBy(queryType)(query[queryType]));
+      const api = await fetch(API.queryBy(queryType, query));
       const data = await api.json();
 
       // handle any error responses
@@ -72,12 +75,6 @@ export default function App() {
     }
   };
 
-  const handleEnter = (e) => {
-    if (e.key === "Enter") {
-      handleSearch();
-    }
-  };
-
   const handleRadioChange = (key) => {
     setQueryType(key);
   };
@@ -85,22 +82,15 @@ export default function App() {
   return (
     <div className="container mt-5">
       <h1>Weather App</h1>
-      <RadioGroup
-        options={query}
-        checked={queryType}
-        onChange={handleRadioChange}
+      <SearchQuery
+        query={query}
+        selectedQueryType={queryType}
+        onRadioChange={handleRadioChange}
+        onInputChange={handleInputChange}
+        error={error}
+        onSearch={handleSearch}
       />
-      <MultipleInputs
-        type="text"
-        values={query[queryType]}
-        onChange={handleChange}
-        onKeyDown={handleEnter}
-      />
-      <ErrorBox message={error} />
-      <button className="btn btn-primary" onClick={handleSearch}>
-        Search
-      </button>
-      {API.getMain(weather) && (
+      {API.isOK(weather) && (
         <Temperature
           temp={API.getTemp(weather)}
           name={API.getCity(weather)}
