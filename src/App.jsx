@@ -1,83 +1,40 @@
-import React, { useState } from "react";
-import Temperature from "./Temperature";
+import React, { useState, useEffect } from "react";
+import API from "./API";
 import SearchQuery from "./SearchQuery";
-
-// using openweathermap.org
-// this contains constants and interfaces with the API
-const API = {
-  ROOT: "https://api.openweathermap.org/data/2.5/weather?",
-  KEY: "5d5c88002278a4fbef29d7752e855e0e",
-  UNITS: "metric",
-  query(format) {
-    return `${this.ROOT}${format}&appid=${this.KEY}&units=${this.UNITS}`;
-  },
-  queryBy(type, query) {
-    switch (type) {
-      case "city":
-        const city = query.city;
-        return this.query(`q=${city.name}`);
-      case "coordinates":
-        const coordinates = query.coordinates;
-        const { latitude, longitude } = coordinates;
-        return this.query(`lat=${latitude}&lon=${longitude}`);
-      default:
-        console.log("Query type not available");
-    }
-  },
-  isOK: (data) => data.cod === 200,
-  getCity: (data) => data.name,
-  getCountry: (data) => data.sys.country,
-  getTemp: (data) => data.main.temp,
-};
-
-const emptyQuery = {
-  city: { name: "" },
-  coordinates: { latitude: "", longitude: "" },
-};
-
-//london
-//lat: 51.509865
-//lon: -0.118092
+import Temperature from "./Temperature";
 
 export default function App() {
-  const [query, setQuery] = useState(emptyQuery);
+  const [query, setQuery] = useState({
+    city: { name: "" },
+    coordinates: { latitude: "", longitude: "" },
+  });
   const [queryType, setQueryType] = useState("city");
-  const [weather, setWeather] = useState({});
+  const [weatherData, setWeatherData] = useState({});
   const [error, setError] = useState("");
 
   const handleInputChange = (id, e) => {
-    const newQuery = { ...query };
-    newQuery[queryType][id] = e.target.value;
-    setQuery(newQuery);
-  };
-
-  const handleError = ({ cod, message }) => {
-    if (cod >= 400 && cod <= 599) {
-      // client or server error response
-      throw new Error(`Error: ${cod}, Message: ${message}`);
-    }
+    setQuery(({ ...newQuery }) => {
+      newQuery[queryType][id] = e.target.value;
+      return newQuery;
+    });
   };
 
   const handleSearch = async () => {
     try {
       const api = await fetch(API.queryBy(queryType, query));
       const data = await api.json();
-
-      // handle any error responses
-      handleError(data);
-      // if no errors thrown, set no errors
-      setError("");
-      console.log(data);
-
-      setWeather(data);
+      // if no errors thrown, set weather data
+      setWeatherData(data);
     } catch (e) {
+      // set error from the fetch API
       setError(e.message);
     }
   };
 
-  const handleRadioChange = (key) => {
-    setQueryType(key);
-  };
+  useEffect(() => {
+    // check status for any errors from the weather data
+    setError(API.getStatus(weatherData));
+  }, [weatherData]);
 
   return (
     <div className="container mt-5">
@@ -85,16 +42,16 @@ export default function App() {
       <SearchQuery
         query={query}
         selectedQueryType={queryType}
-        onRadioChange={handleRadioChange}
+        onRadioChange={setQueryType}
         onInputChange={handleInputChange}
         error={error}
         onSearch={handleSearch}
       />
-      {API.isOK(weather) && (
+      {API.isOK(weatherData) && (
         <Temperature
-          temp={API.getTemp(weather)}
-          name={API.getCity(weather)}
-          country={API.getCountry(weather)}
+          temp={API.getTemp(weatherData)}
+          name={API.getCity(weatherData)}
+          country={API.getCountry(weatherData)}
         />
       )}
     </div>
