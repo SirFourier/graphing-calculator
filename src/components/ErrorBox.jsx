@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 export default function ErrorBox({ message }) {
   return (
@@ -11,3 +12,11 @@ export default function ErrorBox({ message }) {
     </React.Fragment>
   );
 }
+
+ErrorBox.propTypes = {
+  message: PropTypes.string.isRequired,
+};
+
+ErrorBox.defaultProps = {
+  message: "",
+};

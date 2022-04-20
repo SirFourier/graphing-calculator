@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import RadioGroup from "./components/RadioGroup";
 import MultipleInputs from "./components/MultipleInputs";
 import ErrorBox from "./components/ErrorBox";
@@ -36,3 +37,12 @@ export default function SearchQuery({
     </React.Fragment>
   );
 }
+
+SearchQuery.propTypes = {
+  query: PropTypes.object.isRequired,
+  selectedQueryType: PropTypes.string.isRequired,
+  onRadioChange: PropTypes.func.isRequired,
+  onInputChange: PropTypes.func.isRequired,
+  error: PropTypes.string.isRequired,
+  onSearch: PropTypes.func.isRequired,
+};

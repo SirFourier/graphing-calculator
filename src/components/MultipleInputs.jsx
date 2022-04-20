@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 export default function MultipleInputs({
   type,
@@ -25,3 +26,11 @@ export default function MultipleInputs({
     </div>
   );
 }
+
+MultipleInputs.propTypes = {
+  type: PropTypes.string.isRequired,
+  mainLabel: PropTypes.string,
+  values: PropTypes.object.isRequired,
+  onKeyDown: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired,
+};

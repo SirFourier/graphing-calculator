@@ -1,7 +1,6 @@
 import React from "react";
-
-const capitliseFirstLetter = (string) =>
-  string[0].toUpperCase() + string.slice(1);
+import PropTypes from "prop-types";
+import capitliseFirstLetter from "../utilities";
 
 export default function RadioGroup({ options, checked, onChange }) {
   return (
@@ -29,3 +28,9 @@ export default function RadioGroup({ options, checked, onChange }) {
     </div>
   );
 }
+
+RadioGroup.propTypes = {
+  options: PropTypes.object.isRequired,
+  checked: PropTypes.string.isRequired,
+  onChange: PropTypes.func.isRequired,
+};
