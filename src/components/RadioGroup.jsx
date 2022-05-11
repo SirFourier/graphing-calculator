@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-import capitliseFirstLetter from "../utilities";
 
 export default function RadioGroup({ options, checked, onChange }) {
   return (
@@ -9,19 +8,18 @@ export default function RadioGroup({ options, checked, onChange }) {
       role="group"
       aria-label="Basic radio toggle button group"
     >
-      {Object.keys(options).map((key) => (
-        <React.Fragment key={key}>
+      {options.map((option) => (
+        <React.Fragment key={option}>
           <input
             type="radio"
             className="btn-check"
-            id={key}
-            name={key}
+            id={option}
             autoComplete="off"
-            onChange={() => onChange(key)}
-            checked={checked === key}
+            onChange={() => onChange(option)}
+            checked={checked === option}
           />
-          <label className="btn btn-outline-primary" htmlFor={key}>
-            {capitliseFirstLetter(key)}
+          <label className="btn btn-outline-primary" htmlFor={option}>
+            {option}
           </label>
         </React.Fragment>
       ))}
@@ -30,7 +28,7 @@ export default function RadioGroup({ options, checked, onChange }) {
 }
 
 RadioGroup.propTypes = {
-  options: PropTypes.object.isRequired,
+  options: PropTypes.arrayOf(PropTypes.string).isRequired,
   checked: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
 };

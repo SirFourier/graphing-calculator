@@ -1,37 +1,60 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
+import { LOCATE_BY, UNITS, getOneCallData } from "./API";
 import RadioGroup from "./components/RadioGroup";
-import MultipleInputs from "./components/MultipleInputs";
+import Input from "./components/Input";
 import ErrorBox from "./components/ErrorBox";
 
-export default function SearchQuery({
-  query,
-  selectedQueryType,
-  onRadioChange,
-  onInputChange,
-  error,
-  onSearch,
-}) {
-  const handleEnter = (e) => {
-    if (e.key === "Enter") {
-      onSearch();
+export default function SearchQuery({ onSubmit }) {
+  const unitsOptions = [UNITS.METRIC, UNITS.IMPERIAL];
+  const [selectedUnits, setSelectedUnits] = useState(UNITS.METRIC);
+  const [query, setQuery] = useState("");
+  const [error, setError] = useState("");
+
+  const handleQueryChange = (e) => {
+    setQuery(e.target.value);
+  };
+
+  const parseQuery = () => {
+    const coordinates = query.match(/-?\d+.?\d+/g) || [];
+    return coordinates.length > 1
+      ? [LOCATE_BY.COORDINATES, coordinates.slice(0, 2)] // only take first 2 value
+      : [LOCATE_BY.CITY, [query]];
+  };
+
+  const handleSearch = async (e) => {
+    try {
+      const [queryType, values] = parseQuery()
+      const data = await getOneCallData(queryType, ...values);
+      onSubmit(data);
+    } catch (err) {
+      setError(err.message);
     }
   };
+
+  const handleEnter = (e) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
+
   return (
     <React.Fragment>
       <RadioGroup
-        options={query}
-        checked={selectedQueryType}
-        onChange={onRadioChange}
+        options={unitsOptions}
+        checked={selectedUnits}
+        onChange={setSelectedUnits}
       />
-      <MultipleInputs
+      <br />
+      <Input
         type="text"
-        values={query[selectedQueryType]}
-        onChange={onInputChange}
+        placeholder="Search City"
+        value={query}
+        onChange={handleQueryChange}
         onKeyDown={handleEnter}
       />
       <ErrorBox message={error} />
-      <button className="btn btn-primary" onClick={onSearch}>
+      <button className="btn btn-primary" onClick={handleSearch}>
         Search
       </button>
     </React.Fragment>
@@ -39,10 +62,5 @@ export default function SearchQuery({
 }
 
 SearchQuery.propTypes = {
-  query: PropTypes.object.isRequired,
-  selectedQueryType: PropTypes.string.isRequired,
-  onRadioChange: PropTypes.func.isRequired,
-  onInputChange: PropTypes.func.isRequired,
-  error: PropTypes.string.isRequired,
-  onSearch: PropTypes.func.isRequired,
+  onSubmit: PropTypes.func.isRequired,
 };

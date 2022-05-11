@@ -19,8 +19,8 @@ export default function Input({
         type={type}
         placeholder={placeholder}
         value={value}
+        onChange={(e) => onChange(e, id)}
         onKeyDown={(e) => onKeyDown(e)}
-        onChange={(e) => onChange(id, e)}
       />
       {onDelete && (
         <button className="btn btn-outline-danger" onClick={() => onDelete(id)}>
@@ -32,11 +32,12 @@ export default function Input({
 }
 
 Input.propTypes = {
-  id: PropTypes.string.isRequired,
+  id: PropTypes.string,
   label: PropTypes.string,
   type: PropTypes.string.isRequired,
-  placeholder: PropTypes.string.isRequired,
+  placeholder: PropTypes.string,
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
-  onDelete: PropTypes.func
+  onKeyDown: PropTypes.func,
+  onDelete: PropTypes.func,
 };
