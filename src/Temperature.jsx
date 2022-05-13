@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 
 export default function Temperature({ temp, name, country }) {
   return (
@@ -10,4 +11,10 @@ export default function Temperature({ temp, name, country }) {
       </p>
     </div>
   );
+}
+
+Temperature.propTypes = {
+  temp: PropTypes.number.isRequired,
+  name: PropTypes.string.isRequired,
+  country: PropTypes.string.isRequired
 }
