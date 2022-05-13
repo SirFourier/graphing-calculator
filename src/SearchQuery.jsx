@@ -22,7 +22,7 @@ export default function SearchQuery({ onSubmit }) {
       : [LOCATE_BY.CITY, [query]];
   };
 
-  const handleSearch = async (e) => {
+  const handleSearch = async () => {
     try {
       const [queryType, values] = parseQuery()
       const data = await getOneCallData(queryType, ...values);
