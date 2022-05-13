@@ -31,21 +31,21 @@ const getCurrentData = async (type, ...values) => {
   const response = await fetch(QUERY);
   const data = await response.json();
 
-  // handle reading data (and make it private)
-  const privatedData = {
-    isOK: () => data.cod === 200,
-    getCity: () => data.name,
-    getCoords: () => data.coord,
-    getCountry: () => data.sys.country,
-    getTemp: () => data.main.temp,
-    getStatus: () => [data.cod, data.message],
+  // create single source of reformatted data
+  const reformatted = {
+    OK: data?.cod === 200,
+    city: data?.name,
+    coords: data?.coord,
+    country: data?.sys?.country,
+    temp: data?.main?.temp,
+    status: [data?.cod, data?.message],
   };
 
-  if (!privatedData.isOK()) {
-    const [code, msg] = privatedData.getStatus();
+  if (!reformatted.OK) {
+    const [code, msg] = reformatted.status;
     throw new Error(`Error: ${code}, Message: ${msg}`);
   } else {
-    return privatedData;
+    return reformatted;
   }
 };
 
@@ -56,7 +56,7 @@ const getOneCallData = async (type, ...values) => {
 
   switch (type) {
     case LOCATE_BY.CITY:
-      const { lat, lon } = currentData.getCoords();
+      const { lat, lon } = currentData.coords;
       coordinates = [lat, lon];
       break;
     case LOCATE_BY.COORDINATES:
@@ -83,5 +83,4 @@ const getOneCallData = async (type, ...values) => {
 
 export { LOCATE_BY, UNITS, getCurrentData, getOneCallData };
 
-// london
-// 51.509865, -0.118092
+// London: 51.509865, -0.118092
