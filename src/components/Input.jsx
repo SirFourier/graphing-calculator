@@ -2,14 +2,13 @@ import React from "react";
 import PropTypes from "prop-types";
 
 export default function Input({
-  id,
   label,
   type,
   placeholder,
   value,
   onChange,
   onKeyDown,
-  onDelete,
+  children,
 }) {
   return (
     <div className="input-group flex-nowrap mb-2">
@@ -19,25 +18,19 @@ export default function Input({
         type={type}
         placeholder={placeholder}
         value={value}
-        onChange={(e) => onChange(e, id)}
+        onChange={(e) => onChange(e)}
         onKeyDown={(e) => onKeyDown(e)}
       />
-      {onDelete && (
-        <button className="btn btn-outline-danger" onClick={() => onDelete(id)}>
-          Delete
-        </button>
-      )}
+      {children}
     </div>
   );
 }
 
 Input.propTypes = {
-  id: PropTypes.string,
   label: PropTypes.string,
   type: PropTypes.string.isRequired,
   placeholder: PropTypes.string,
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
   onKeyDown: PropTypes.func,
-  onDelete: PropTypes.func,
 };
