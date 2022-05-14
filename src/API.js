@@ -1,10 +1,10 @@
 // using the openweathermap.org API
 // this contains constants and methods to interface with the response from the API
 
-const buildQuery = (query) => {
+const buildQuery = (query, units) => {
   const ROOT = "https://api.openweathermap.org/data/2.5/";
   const KEY = "5d5c88002278a4fbef29d7752e855e0e";
-  return `${ROOT}${query}&appid=${KEY}`;
+  return `${ROOT}${query}&appid=${KEY}&units=${units}`;
 };
 
 const LOCATE_BY = {
@@ -23,10 +23,10 @@ const QUERY_BY = {
 };
 
 // current weather data
-const getCurrentData = async (type, ...values) => {
+const getCurrentData = async (type, units, ...values) => {
   const SELECTION = "weather?";
   const LOCATION = QUERY_BY[type](...values);
-  const QUERY = buildQuery(`${SELECTION}${LOCATION}`);
+  const QUERY = buildQuery(`${SELECTION}${LOCATION}`, units);
 
   const response = await fetch(QUERY);
   const data = await response.json();
@@ -39,6 +39,7 @@ const getCurrentData = async (type, ...values) => {
     country: data?.sys?.country,
     temp: data?.main?.temp,
     status: [data?.cod, data?.message],
+    units,
   };
 
   if (!reformatted.OK) {
@@ -50,8 +51,8 @@ const getCurrentData = async (type, ...values) => {
 };
 
 // one call weather data
-const getOneCallData = async (type, ...values) => {
-  const currentData = await getCurrentData(type, ...values);
+const getOneCallData = async (type, units, ...values) => {
+  const currentData = await getCurrentData(type, units, ...values);
   let coordinates = values;
 
   switch (type) {
@@ -71,7 +72,8 @@ const getOneCallData = async (type, ...values) => {
   // one call api can only be called by coordinates
   const LOCATION = QUERY_BY[LOCATE_BY.COORDINATES](...coordinates);
   const QUERY = buildQuery(
-    `${SELECTION}${LOCATION}&exclude=${EXCLUDE.join(",")}`
+    `${SELECTION}${LOCATION}&exclude=${EXCLUDE.join(",")}`,
+    units
   );
 
   const response = await fetch(QUERY);
