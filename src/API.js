@@ -31,7 +31,7 @@ const getCurrentData = async (type, units, ...values) => {
   const response = await fetch(QUERY);
   const data = await response.json();
 
-  // create single source of reformatted data
+  // reformat API
   const reformatted = {
     OK: data?.cod === 200,
     city: data?.name,

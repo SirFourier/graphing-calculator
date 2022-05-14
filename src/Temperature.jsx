@@ -1,9 +1,11 @@
 import React from "react";
-import PropTypes from "prop-types";
+import { useWeather } from "./helper/WeatherContext";
 import { UNITS } from "./API";
 const { METRIC, IMPERIAL } = UNITS;
 
-export default function Temperature({ temp, units, city, country }) {
+export default function Temperature() {
+  const { weather } = useWeather();
+  const { temp, units, city, country } = weather;
   const getCode = () => {
     switch (units) {
       case METRIC:
@@ -25,10 +27,3 @@ export default function Temperature({ temp, units, city, country }) {
     </div>
   );
 }
-
-Temperature.propTypes = {
-  temp: PropTypes.number.isRequired,
-  units: PropTypes.string.isRequired,
-  city: PropTypes.string.isRequired,
-  country: PropTypes.string.isRequired,
-};

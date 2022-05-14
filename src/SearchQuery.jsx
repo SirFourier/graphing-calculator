@@ -1,12 +1,13 @@
 import React, { useState } from "react";
-import PropTypes from "prop-types";
 import { LOCATE_BY, UNITS, getOneCallData } from "./API";
+import { useWeather } from "./helper/WeatherContext";
 import RadioGroup from "./components/RadioGroup";
 import Input from "./components/Input";
 import ErrorBox from "./components/ErrorBox";
 
-export default function SearchQuery({ onSubmit }) {
+export default function SearchQuery() {
   const [selectedUnits, setSelectedUnits] = useState(UNITS.METRIC);
+  const { updateWeather } = useWeather();
   const [query, setQuery] = useState("");
   const [error, setError] = useState("");
 
@@ -24,8 +25,7 @@ export default function SearchQuery({ onSubmit }) {
   const handleSearch = async () => {
     try {
       const [queryType, values] = parseQuery();
-      const data = await getOneCallData(queryType, selectedUnits, ...values);
-      onSubmit(data);
+      updateWeather(await getOneCallData(queryType, selectedUnits, ...values));
       setError(""); // clear error
     } catch (err) {
       setError(err.message);
@@ -61,7 +61,3 @@ export default function SearchQuery({ onSubmit }) {
     </React.Fragment>
   );
 }
-
-SearchQuery.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
-};
