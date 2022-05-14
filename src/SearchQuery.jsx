@@ -6,12 +6,11 @@ import Input from "./components/Input";
 import ErrorBox from "./components/ErrorBox";
 
 export default function SearchQuery({ onSubmit }) {
-  const unitsOptions = [UNITS.METRIC, UNITS.IMPERIAL];
   const [selectedUnits, setSelectedUnits] = useState(UNITS.METRIC);
   const [query, setQuery] = useState("");
   const [error, setError] = useState("");
 
-  const handleQueryChange = (e) => {
+  const handleChange = (e) => {
     setQuery(e.target.value);
   };
 
@@ -24,9 +23,10 @@ export default function SearchQuery({ onSubmit }) {
 
   const handleSearch = async () => {
     try {
-      const [queryType, values] = parseQuery()
-      const data = await getOneCallData(queryType, ...values);
+      const [queryType, values] = parseQuery();
+      const data = await getOneCallData(queryType, selectedUnits, ...values);
       onSubmit(data);
+      setError(""); // clear error
     } catch (err) {
       setError(err.message);
     }
@@ -41,22 +41,23 @@ export default function SearchQuery({ onSubmit }) {
   return (
     <React.Fragment>
       <RadioGroup
-        options={unitsOptions}
+        options={Object.values(UNITS)}
         checked={selectedUnits}
         onChange={setSelectedUnits}
       />
       <br />
       <Input
         type="text"
-        placeholder="Search City"
+        placeholder="Search city by name or coordinates"
         value={query}
-        onChange={handleQueryChange}
+        onChange={handleChange}
         onKeyDown={handleEnter}
-      />
+      >
+        <button className="btn btn-primary" onClick={handleSearch}>
+          Search
+        </button>
+      </Input>
       <ErrorBox message={error} />
-      <button className="btn btn-primary" onClick={handleSearch}>
-        Search
-      </button>
     </React.Fragment>
   );
 }
