@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import capitliseFirstLetter from "./../utilities";
 
 export default function RadioGroup({ options, checked, onChange }) {
   return (
@@ -19,7 +20,7 @@ export default function RadioGroup({ options, checked, onChange }) {
             checked={checked === option}
           />
           <label className="btn btn-outline-primary" htmlFor={option}>
-            {option}
+            {capitliseFirstLetter(option)}
           </label>
         </React.Fragment>
       ))}
