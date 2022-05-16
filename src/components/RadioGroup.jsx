@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import capitliseFirstLetter from "./../utilities";
+import { capitliseFirstLetter } from "../utilities";
 
 export default function RadioGroup({ options, checked, onChange }) {
   return (

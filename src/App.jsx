@@ -5,6 +5,7 @@ import { useWeather } from "./helper/WeatherContext";
 
 export default function App() {
   const { weather } = useWeather();
+  console.log(weather);
 
   return (
     <div className="container mt-5">

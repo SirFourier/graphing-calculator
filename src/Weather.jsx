@@ -1,6 +1,13 @@
 import React from "react";
-import Temperature from "./Temperature";
+import Current from "./Current";
+import Daily from "./Daily";
 
+// contains current and and daily weather
 export default function Weather() {
-  return <Temperature />;
+  return (
+    <div>
+      <Current />
+      <Daily />
+    </div>
+  );
 }
