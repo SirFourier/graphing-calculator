@@ -5,9 +5,11 @@ import Daily from "./Daily";
 // contains current and and daily weather
 export default function Weather() {
   return (
-    <div>
-      <Current />
-      <Daily />
+    <div className="container">
+      <div className="mt-3 row">
+        <Current className="col-4" />
+        <Daily className="col-8" />
+      </div>
     </div>
   );
 }
