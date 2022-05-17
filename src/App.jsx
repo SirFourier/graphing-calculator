@@ -9,7 +9,7 @@ export default function App() {
 
   return (
     <div className="container mt-5">
-      <h1>Weather Application</h1>
+      <h1>Weather App</h1>
       <SearchQuery />
       {weather?.OK && <Weather />}
     </div>
