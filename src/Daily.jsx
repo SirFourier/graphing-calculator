@@ -35,7 +35,7 @@ export default function Daily(props) {
               <tr key={dt}>
                 <th scope="row">{getDateString(dt, country)}</th>
                 <td>
-                  {Math.round(max)}/{Math.round(min)}
+                  {Math.round(max)} / {Math.round(min)}
                   {unitsCode}
                 </td>
                 <td>{description}</td>

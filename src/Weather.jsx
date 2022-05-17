@@ -7,8 +7,10 @@ export default function Weather() {
   return (
     <div className="container">
       <div className="mt-3 row">
-        <Current className="col-4" />
-        <Daily className="col-8" />
+        <Current
+          className="col-auto"
+        />
+        <Daily className="col" />
       </div>
     </div>
   );
