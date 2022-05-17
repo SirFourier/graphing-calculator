@@ -3,28 +3,37 @@ import { useWeather } from "./helper/WeatherContext";
 import { getUnitsCode } from "./utilities";
 
 // show current weather
-export default function Current() {
+export default function Current(props) {
   const { weather } = useWeather();
   const { temp, units, current, country, city, timezone } = weather;
   const { dt, feels_like, humidity, pressure } = current;
   const { main, description } = current.weather[0];
   const unitsCode = getUnitsCode(units);
+
   const now = new Date(dt * 1000);
+  const locale = now.toLocaleString("en-" + country, {
+    dateStyle: "medium",
+    timeStyle: "short",
+    timeZone: timezone,
+    hour12: true,
+  });
 
   return (
-    <div className="current">
-      <p className="lead">
-        {now.toString()} <br />
-        {city}, {country}
+    <div {...props}>
+      <p className="lead fs-4" style={{margin: "0"}}>
+        {locale} <br />
+        <b>
+          {city}, {country}
+        </b>
       </p>
-      <p className="lead"></p>
-      <p className="temp">
+      <p style={{fontSize: "7em", margin: "0"}}>
         {Math.round(temp)}
         {unitsCode}
       </p>
-      <p className="lead">
-        Feels like: {feels_like}
-        {unitsCode}. {main}, {description}. <br />
+      <p className="lead fs-5">
+        Feels like: {Math.round(feels_like)}
+        {unitsCode}. {main}, {description}.
+        <br />
         Humidity: {humidity}%. Pressure: {pressure} hPa.
       </p>
     </div>
