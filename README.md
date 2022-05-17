@@ -1,3 +1,8 @@
+# Weather Application
+https://sirfourier.github.io/weather-app/
+
+Contains a search query which takes in a city or a pair of coordinates (lat and lon). Then it returns the current weather and an 8-day forecast with additional descriptions.
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
