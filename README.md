@@ -1,5 +1,5 @@
 # Weather Application
-https://sirfourier.github.io/weather-app/
+https://ryan-tabar.github.io/weather-app/
 
 Contains a search query which takes in a city or a pair of coordinates (lat and lon). Then it returns the current weather and an 8-day forecast with additional descriptions.
 
