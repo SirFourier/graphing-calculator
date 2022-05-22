@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { LOCATE_BY, UNITS, getOneCallData } from "./API";
 import { useWeather } from "./helper/WeatherContext";
 import RadioGroup from "./components/RadioGroup";
@@ -24,9 +24,31 @@ export default function SearchQuery() {
 
   const handleSearch = async () => {
     try {
-      const [queryType, values] = parseQuery();
-      updateWeather(await getOneCallData(queryType, selectedUnits, ...values));
-      setError(""); // clear error
+      if (query === "") {
+        const getWeatherData = async (position) => {
+          const { latitude, longitude } = position.coords;
+          updateWeather(
+            await getOneCallData(
+              LOCATE_BY.COORDINATES,
+              selectedUnits,
+              latitude,
+              longitude
+            )
+          );
+          setError(""); // clear error
+        };
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(getWeatherData);
+        } else {
+          throw new Error("Could not get your location");
+        }
+      } else {
+        const [queryType, values] = parseQuery();
+        updateWeather(
+          await getOneCallData(queryType, selectedUnits, ...values)
+        );
+        setError(""); // clear error
+      }
     } catch (err) {
       setError(err.message);
     }
@@ -37,6 +59,10 @@ export default function SearchQuery() {
       handleSearch();
     }
   };
+
+  useEffect(() => {
+    handleSearch();
+  }, [selectedUnits]);
 
   return (
     <React.Fragment>
