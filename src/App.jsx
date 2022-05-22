@@ -1,6 +1,7 @@
 import React from "react";
 import SearchQuery from "./SearchQuery";
 import Weather from "./Weather";
+import Spinner from "./components/Spinner"
 import { useWeather } from "./helper/WeatherContext";
 
 export default function App() {
@@ -11,7 +12,7 @@ export default function App() {
     <div className="container mt-5">
       <h1>Weather App</h1>
       <SearchQuery />
-      {weather?.OK && <Weather />}
+      {(weather?.OK && <Weather />) || <Spinner />}
     </div>
   );
 }
